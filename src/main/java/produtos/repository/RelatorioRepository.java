@@ -4,8 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import produtos.dto.relatorios.FaturamentoMensalResponse;
-import produtos.dto.relatorios.TicketMedioResponse;
 import produtos.entity.Pedidos;
 
 import java.util.List;

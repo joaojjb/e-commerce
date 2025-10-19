@@ -10,7 +10,7 @@ import java.util.UUID;
 @Mapper(componentModel = "spring")
 public interface RelatorioMapper {
 
-    default TopUsuariosResponse mapToTopUsuariosResponse(Object[] row) {
+    default TopUsuariosResponse mapToTopUsuariosResponse(final Object[] row) {
         return TopUsuariosResponse.builder()
             .usuarioId(UUID.fromString((String) row[0]))
             .username((String) row[1])
@@ -20,7 +20,7 @@ public interface RelatorioMapper {
             .build();
     }
 
-    default TicketMedioResponse mapToTicketMedioResponse(Object[] row) {
+    default TicketMedioResponse mapToTicketMedioResponse(final Object[] row) {
         return TicketMedioResponse.builder()
             .usuarioId(UUID.fromString((String) row[0]))
             .username((String) row[1])
@@ -30,7 +30,7 @@ public interface RelatorioMapper {
             .build();
     }
 
-    default FaturamentoMensalResponse mapToFaturamentoMensalResponse(Object[] row, Integer mes) {
+    default FaturamentoMensalResponse mapToFaturamentoMensalResponse(final Object[] row, final Integer mes) {
         return FaturamentoMensalResponse.builder()
             .ano(((Number) row[0]).intValue())
             .mes(((Number) row[1]).intValue())

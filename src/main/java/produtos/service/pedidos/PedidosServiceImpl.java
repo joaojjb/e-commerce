@@ -44,7 +44,7 @@ public class PedidosServiceImpl implements PedidosService {
         setProdutosDoPedido(request, pedido);
 
         pedido.calcularValorTotal();
-        Pedidos pedidoSalvo = pedidosRepository.save(pedido);
+        final Pedidos pedidoSalvo = pedidosRepository.save(pedido);
         return pedidosMapper.toResponse(pedidoSalvo);
     }
 
@@ -78,7 +78,7 @@ public class PedidosServiceImpl implements PedidosService {
     @Override
     @Transactional(readOnly = true)
     public PedidosResponse buscarPorId(final UUID id) {
-        Pedidos pedido = pedidosRepository.findById(id)
+        final Pedidos pedido = pedidosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
         return pedidosMapper.toResponse(pedido);
     }
@@ -103,7 +103,7 @@ public class PedidosServiceImpl implements PedidosService {
     @Transactional(readOnly = true)
     public List<PedidosResponse> listarPedidosDoUsuario() {
         final User usuarioAtual = authService.getUsuarioAtual();
-        List<Pedidos> pedidos = pedidosRepository.findByCriadoPor(usuarioAtual);
+        final List<Pedidos> pedidos = pedidosRepository.findByCriadoPor(usuarioAtual);
         return pedidosMapper.toListResponse(pedidos);
     }
 

@@ -31,10 +31,10 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        var user = userRepository.findByUsername(request.getUsername())
+        final var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        var jwtToken = jwtService.generateToken(user);
+        final var jwtToken = jwtService.generateToken(user);
 
         return LoginResponse.builder()
                 .token(jwtToken)
@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Username already exists");
         }
 
-        var user = User.builder()
+        final var user = User.builder()
                 .username(request.getUsername())
                 .password(this.passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
 
         this.userRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(user);
+        final var jwtToken = jwtService.generateToken(user);
 
         return LoginResponse.builder()
                 .token(jwtToken)

@@ -11,10 +11,8 @@ import produtos.mapper.RelatorioMapper;
 import produtos.repository.RelatorioRepository;
 import produtos.util.DateUtils;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +56,7 @@ public class RelatorioServiceImpl implements RelatorioService {
     
     @Override
     @Transactional(readOnly = true)
-    public RelatorioResponse getFaturamentoMensal(Integer ano, Integer mes) {
+    public RelatorioResponse getFaturamentoMensal(final Integer ano, final Integer mes) {
         final List<Object[]> resultados = relatorioRepository.findFaturamentoMensal(ano, mes);
         
         final List<FaturamentoMensalResponse> dados = resultados.stream()

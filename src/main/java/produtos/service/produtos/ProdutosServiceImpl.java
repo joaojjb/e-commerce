@@ -47,7 +47,7 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Override
     @Transactional(readOnly = true)
     public ProdutosResponse buscarPorId(final UUID id) {
-        Produtos produto = buscarEntidadePorId(id);
+        final Produtos produto = buscarEntidadePorId(id);
         return produtosMapper.toResponse(produto);
     }
 
@@ -72,14 +72,14 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Transactional(readOnly = true)
     public List<ProdutosResponse> buscar(final String nome, final String categoria,
                                          final BigDecimal precoMin, final BigDecimal precoMax) {
-        var spec = ProdutoSpecification.builder()
+        final var spec = ProdutoSpecification.builder()
                 .nome(nome)
                 .categoria(categoria)
                 .precoMinimo(precoMin)
                 .precoMaximo(precoMax)
                 .build();
 
-        List<Produtos> produtos = produtosRepository.findAll(spec);
+        final List<Produtos> produtos = produtosRepository.findAll(spec);
         return produtosMapper.toListResponse(produtos);
     }
 
