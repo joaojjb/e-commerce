@@ -12,9 +12,8 @@ public interface PedidosService {
 
     PedidosResponse buscarPorId(final UUID id);
 
-    PedidosResponse pagar(final UUID id,final TipoPagamento tipoPagamento);
+    PedidosResponse pagar(final UUID id, final TipoPagamento tipoPagamento);
 
     List<PedidosResponse> listarPedidosDoUsuario();
-
 }
 

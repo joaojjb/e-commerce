@@ -3,6 +3,8 @@ package produtos.service.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import produtos.dto.auth.LoginRequest;
@@ -67,6 +69,23 @@ public class AuthServiceImpl implements AuthService {
                 .dataCadastro(user.getDataCadastro())
                 .dataAtualizacao(user.getDataAtualizacao())
                 .build();
+    }
+
+    @Override
+    public User getUsuarioAtual() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        if (authentication == null || !authentication.isAuthenticated() 
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new RuntimeException("Usuário não autenticado");
+        }
+        
+        final Object principal = authentication.getPrincipal();
+        if (principal instanceof User) {
+            return (User) principal;
+        }
+        
+        throw new RuntimeException("Tipo de usuário não suportado");
     }
 }
 

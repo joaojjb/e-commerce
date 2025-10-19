@@ -24,22 +24,19 @@ public class PedidosController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PedidosResponse> buscarPorId(@PathVariable final UUID id) {
-        final PedidosResponse produto = pedidosService.buscarPorId(id);
-        return ResponseEntity.ok(produto);
+        return ResponseEntity.ok(pedidosService.buscarPorId(id));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PedidosResponse> criar(@Valid @RequestBody final PedidosRequest request) {
-        final PedidosResponse pedido = pedidosService.criar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidosService.criar(request));
     }
 
     @GetMapping("/meus-pedidos")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<PedidosResponse>> listarMeusPedidos() {
-        final List<PedidosResponse> pedidos = pedidosService.listarPedidosDoUsuario();
-        return ResponseEntity.ok(pedidos);
+        return ResponseEntity.ok(pedidosService.listarPedidosDoUsuario());
     }
 
     @PatchMapping("/pagar/{id}")
@@ -47,8 +44,7 @@ public class PedidosController {
     public ResponseEntity<PedidosResponse> pagar(
             @PathVariable final UUID id,
             @RequestParam final TipoPagamento tipoPagamento) {
-        final PedidosResponse pedido = pedidosService.pagar(id, tipoPagamento);
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(pedidosService.pagar(id, tipoPagamento));
     }
 
 }

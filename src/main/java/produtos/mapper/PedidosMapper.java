@@ -2,6 +2,7 @@ package produtos.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import produtos.dto.pedidos.PedidosRequest;
 import produtos.dto.pedidos.PedidosResponse;
 import produtos.entity.Pedidos;
 
@@ -18,5 +19,5 @@ public interface PedidosMapper {
     @Mapping(target = "atualizadoPorUsername", source = "atualizadoPor.username")
     PedidosResponse toResponse(Pedidos pedido);
 
-    List<PedidosResponse> toResponseList(List<Pedidos> pedidos);
+    List<PedidosResponse> toListResponse(List<Pedidos> pedidos);
 }

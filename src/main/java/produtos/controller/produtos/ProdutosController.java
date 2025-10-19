@@ -5,7 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import produtos.dto.produtos.ProdutosRequest;
 import produtos.dto.produtos.ProdutosResponse;
 import produtos.service.produtos.ProdutosService;
@@ -24,8 +32,7 @@ public class ProdutosController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ProdutosResponse> buscarPorId(@PathVariable final UUID id) {
-        final ProdutosResponse produto = produtosService.buscarPorId(id);
-        return ResponseEntity.ok(produto);
+        return ResponseEntity.ok(produtosService.buscarPorId(id));
     }
 
     @GetMapping
@@ -41,8 +48,7 @@ public class ProdutosController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProdutosResponse> criar(@Valid @RequestBody final ProdutosRequest request) {
-        final ProdutosResponse produto = produtosService.criar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtosService.criar(request));
     }
 
     @PutMapping("/{id}")
@@ -50,8 +56,7 @@ public class ProdutosController {
     public ResponseEntity<ProdutosResponse> atualizar(
             @PathVariable final UUID id,
             @Valid @RequestBody final ProdutosRequest request) {
-        final ProdutosResponse produto = produtosService.atualizar(id, request);
-        return ResponseEntity.ok(produto);
+        return ResponseEntity.ok(produtosService.atualizar(id, request));
     }
 
     @DeleteMapping("/{id}")

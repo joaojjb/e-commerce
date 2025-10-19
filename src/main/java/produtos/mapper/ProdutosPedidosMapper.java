@@ -2,8 +2,11 @@ package produtos.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import produtos.dto.pedidos.ProdutosPedidosRequest;
 import produtos.dto.pedidos.ProdutosPedidosResponse;
 import produtos.entity.ProdutosPedidos;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProdutosPedidosMapper {
@@ -15,4 +18,6 @@ public interface ProdutosPedidosMapper {
     @Mapping(target = "atualizadoPorId", source = "atualizadoPor.id")
     @Mapping(target = "atualizadoPorUsername", source = "atualizadoPor.username")
     ProdutosPedidosResponse toResponse(ProdutosPedidos produtosPedidos);
+
+    List<ProdutosPedidosResponse> toListResponse(List<ProdutosPedidos> produtosPedidos);
 }

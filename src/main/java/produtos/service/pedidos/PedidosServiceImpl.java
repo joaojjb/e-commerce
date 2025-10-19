@@ -1,14 +1,11 @@
 package produtos.service.pedidos;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import produtos.dto.pedidos.PedidosRequest;
 import produtos.dto.pedidos.PedidosResponse;
 import produtos.dto.pedidos.ProdutosPedidosRequest;
-import produtos.dto.pedidos.ProdutosPedidosResponse;
 import produtos.entity.Pedidos;
 import produtos.entity.Produtos;
 import produtos.entity.ProdutosPedidos;
@@ -16,12 +13,12 @@ import produtos.entity.User;
 import produtos.enums.TipoPagamento;
 import produtos.mapper.PedidosMapper;
 import produtos.repository.PedidosRepository;
+import produtos.service.auth.AuthService;
 import produtos.service.produtos.ProdutosService;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static produtos.enums.StatusPedido.CANCELADO;
 import static produtos.enums.StatusPedido.PAGO;
@@ -33,12 +30,13 @@ public class PedidosServiceImpl implements PedidosService {
 
     private final PedidosRepository pedidosRepository;
     private final ProdutosService produtosService;
+    private final AuthService authService;
     private final PedidosMapper pedidosMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public PedidosResponse criar(final PedidosRequest request) {
-        Pedidos pedido = Pedidos.builder()
+        final Pedidos pedido = Pedidos.builder()
                 .statusPedido(PENDENTE)
                 .valorTotal(BigDecimal.ZERO)
                 .build();
@@ -46,49 +44,13 @@ public class PedidosServiceImpl implements PedidosService {
         setProdutosDoPedido(request, pedido);
 
         pedido.calcularValorTotal();
-        pedido = pedidosRepository.save(pedido);
-
-        return pedidosMapper.toResponse(pedido);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PedidosResponse buscarPorId(final UUID id) {
-        final Pedidos pedido = pedidosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
-        return pedidosMapper.toResponse(pedido);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public PedidosResponse pagar(final UUID id, final TipoPagamento tipoPagamento) {
-        Pedidos pedido = pedidosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
-
-        validaStatusPedido(pedido);
-
-        this.processaProdutosPagamento(pedido);
-
-        pedido.setStatusPedido(PAGO);
-        pedido.setTipoPagamento(tipoPagamento);
-        pedido = pedidosRepository.save(pedido);
-
-        return pedidosMapper.toResponse(pedido);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<PedidosResponse> listarPedidosDoUsuario() {
-        final User usuarioAtual = getUsuarioAtual();
-        
-        final List<Pedidos> pedidos = pedidosRepository.findByCriadoPor(usuarioAtual);
-        
-        return pedidosMapper.toResponseList(pedidos);
+        Pedidos pedidoSalvo = pedidosRepository.save(pedido);
+        return pedidosMapper.toResponse(pedidoSalvo);
     }
 
     private void setProdutosDoPedido(final PedidosRequest request, final Pedidos pedido) {
         for (final ProdutosPedidosRequest itemRequest : request.getProdutos()) {
-            final Produtos produto = produtosService.findById(itemRequest.getProdutoId());
+            final Produtos produto = findProdutoById(itemRequest.getProdutoId());
 
             validaQuantidade(itemRequest, produto);
 
@@ -102,6 +64,49 @@ public class PedidosServiceImpl implements PedidosService {
             pedido.adicionarItem(item);
         }
     }
+
+    private Produtos findProdutoById(final UUID id) {
+        return produtosService.buscarEntidadePorId(id);
+    }
+
+    private static void validaQuantidade(final ProdutosPedidosRequest itemRequest, final Produtos produto) {
+        if (produto.getQuantidadeEstoque() < itemRequest.getQuantidade()) {
+            throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PedidosResponse buscarPorId(final UUID id) {
+        Pedidos pedido = pedidosRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+        return pedidosMapper.toResponse(pedido);
+    }
+
+    @Override
+    @Transactional
+    public PedidosResponse pagar(final UUID id, final TipoPagamento tipoPagamento) {
+        Pedidos pedido = pedidosRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+
+        validaStatusPedido(pedido);
+
+        this.processaProdutosPagamento(pedido);
+
+        pedido.setStatusPedido(PAGO);
+        pedido.setTipoPagamento(tipoPagamento);
+        pedido = pedidosRepository.save(pedido);
+        return pedidosMapper.toResponse(pedido);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PedidosResponse> listarPedidosDoUsuario() {
+        final User usuarioAtual = authService.getUsuarioAtual();
+        List<Pedidos> pedidos = pedidosRepository.findByCriadoPor(usuarioAtual);
+        return pedidosMapper.toListResponse(pedidos);
+    }
+
 
     private void processaProdutosPagamento(final Pedidos pedido) {
         for (final ProdutosPedidos item : pedido.getProdutosPedidos()) {
@@ -138,27 +143,7 @@ public class PedidosServiceImpl implements PedidosService {
          }
      }
 
-     private User getUsuarioAtual() {
-         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-         
-         if (authentication == null || !authentication.isAuthenticated() 
-                 || "anonymousUser".equals(authentication.getPrincipal())) {
-             throw new RuntimeException("Usuário não autenticado");
-         }
-         
-         final Object principal = authentication.getPrincipal();
-         if (principal instanceof User) {
-             return (User) principal;
-         }
-         
-         throw new RuntimeException("Tipo de usuário não suportado");
-     }
 
-    private static void validaQuantidade(final ProdutosPedidosRequest itemRequest, final Produtos produto) {
-        if (produto.getQuantidadeEstoque() < itemRequest.getQuantidade()) {
-            throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
-        }
-    }
 
 }
 

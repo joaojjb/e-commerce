@@ -14,8 +14,8 @@ public interface ProdutosService {
     ProdutosResponse atualizar(final UUID id, final ProdutosRequest request);
 
     ProdutosResponse buscarPorId(final UUID id);
-
-    Produtos findById(final UUID id);
+    
+    Produtos buscarEntidadePorId(final UUID id);
 
     void atualizarEstoque(final UUID produtoId, final Integer novaQuantidade);
 

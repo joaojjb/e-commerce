@@ -12,7 +12,6 @@ import produtos.repository.ProdutosRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ProdutosResponse criar(final ProdutosRequest request) {
-        Produtos produto = produtosMapper.toEntity(request);
+        Produtos produto = produtosMapper.fromRequest(request);
         produto = produtosRepository.save(produto);
         return produtosMapper.toResponse(produto);
     }
@@ -32,28 +31,29 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ProdutosResponse atualizar(final UUID id, final ProdutosRequest request) {
-        Produtos produto = produtosRepository.findById(id)
+        Produtos produtoExistente = produtosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
 
-        produto.setNome(request.getNome());
-        produto.setDescricao(request.getDescricao());
-        produto.setPreco(request.getPreco());
-        produto.setCategoria(request.getCategoria());
-        produto.setQuantidadeEstoque(request.getQuantidadeEstoque());
+        produtoExistente.setNome(request.getNome());
+        produtoExistente.setDescricao(request.getDescricao());
+        produtoExistente.setPreco(request.getPreco());
+        produtoExistente.setCategoria(request.getCategoria());
+        produtoExistente.setQuantidadeEstoque(request.getQuantidadeEstoque());
 
-        produto = produtosRepository.save(produto);
-        return produtosMapper.toResponse(produto);
+        produtoExistente = produtosRepository.save(produtoExistente);
+        return produtosMapper.toResponse(produtoExistente);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProdutosResponse buscarPorId(final UUID id) {
-        return produtosMapper.toResponse(findById(id));
+        Produtos produto = buscarEntidadePorId(id);
+        return produtosMapper.toResponse(produto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Produtos findById(final UUID id) {
+    public Produtos buscarEntidadePorId(final UUID id) {
         return produtosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
     }
@@ -79,12 +79,9 @@ public class ProdutosServiceImpl implements ProdutosService {
                 .precoMaximo(precoMax)
                 .build();
 
-        return produtosRepository.findAll(spec)
-                .stream()
-                .map(produtosMapper::toResponse)
-                .collect(Collectors.toList());
+        List<Produtos> produtos = produtosRepository.findAll(spec);
+        return produtosMapper.toListResponse(produtos);
     }
-
 
     @Override
     @Transactional(rollbackFor = Exception.class)
