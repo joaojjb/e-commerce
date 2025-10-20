@@ -27,7 +27,7 @@ O dump já contém dados de exemplo (usuários, produtos, pedidos):
 docker exec -i produtos-mysql mysql -uroot -proot < dump.sql
 ```
 
-### 3. Compilar o projeto (opcional)
+### 3. Compilar o projeto
 
 Para compilar e gerar o .jar executável:
 
