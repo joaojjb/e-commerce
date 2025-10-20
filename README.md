@@ -73,7 +73,7 @@ A API estará disponível em `http://localhost:8080`
 - `POST /pedidos` - Criar novo pedido
 - `PATCH /pedidos/pagar/{id}?tipoPagamento={tipo}` - Processar pagamento
 
-### Relatórios (apenas ADMIN)
+### Relatórios
 
 - `GET /relatorios/top-usuarios` - Top 5 usuários que mais compraram
 - `GET /relatorios/ticket-medio` - Ticket médio por usuário
