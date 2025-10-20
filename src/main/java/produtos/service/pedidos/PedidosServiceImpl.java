@@ -11,6 +11,7 @@ import produtos.entity.Produtos;
 import produtos.entity.ProdutosPedidos;
 import produtos.entity.User;
 import produtos.enums.TipoPagamento;
+import produtos.config.exception.DomainException;
 import produtos.mapper.PedidosMapper;
 import produtos.repository.PedidosRepository;
 import produtos.service.auth.AuthService;
@@ -71,7 +72,7 @@ public class PedidosServiceImpl implements PedidosService {
 
     private static void validaQuantidade(final ProdutosPedidosRequest itemRequest, final Produtos produto) {
         if (produto.getQuantidadeEstoque() < itemRequest.getQuantidade()) {
-            throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
+            throw new DomainException("Estoque insuficiente para o produto: " + produto.getNome());
         }
     }
 
@@ -79,7 +80,7 @@ public class PedidosServiceImpl implements PedidosService {
     @Transactional(readOnly = true)
     public PedidosResponse buscarPorId(final UUID id) {
         final Pedidos pedido = pedidosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new DomainException("Pedido não encontrado com ID: " + id));
         return pedidosMapper.toResponse(pedido);
     }
 
@@ -87,7 +88,7 @@ public class PedidosServiceImpl implements PedidosService {
     @Transactional
     public PedidosResponse pagar(final UUID id, final TipoPagamento tipoPagamento) {
         Pedidos pedido = pedidosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado com ID: " + id));
+                .orElseThrow(() -> new DomainException("Pedido não encontrado com ID: " + id));
 
         validaStatusPedido(pedido);
 
@@ -120,7 +121,7 @@ public class PedidosServiceImpl implements PedidosService {
 
     private static void validaStatusPedido(final Pedidos pedido) {
         if (!PENDENTE.equals(pedido.getStatusPedido())) {
-            throw new RuntimeException("Não é possível prosseguir com o pagamento do pedido, o mesmo não se encontra Pendente");
+            throw new DomainException("Não é possível prosseguir com o pagamento do pedido, o mesmo não se encontra Pendente");
         }
     }
 
@@ -139,9 +140,9 @@ public class PedidosServiceImpl implements PedidosService {
             );
             pedidosRepository.save(pedido);
 
-             throw new RuntimeException("Pagamento cancelado. " + pedido.getMotivoCancelamento());
+             throw new DomainException("Pagamento cancelado. " + pedido.getMotivoCancelamento());
          }
-     }
+    }
 
 
 

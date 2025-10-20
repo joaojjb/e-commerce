@@ -1,4 +1,4 @@
-package produtos.security;
+package produtos.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -11,6 +11,7 @@ import produtos.dto.auth.LoginRequest;
 import produtos.dto.auth.LoginResponse;
 import produtos.dto.auth.RegisterRequest;
 import produtos.entity.User;
+import produtos.config.exception.DomainException;
 import produtos.repository.UserRepository;
 
 @Service
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         final var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new DomainException("Usuário não encontrado"));
 
         final var jwtToken = jwtService.generateToken(user);
 
@@ -49,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse register(final RegisterRequest request) {
 
         if (this.userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new DomainException("Nome de usuário já existe");
         }
 
         final var user = User.builder()
@@ -77,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
         
         if (authentication == null || !authentication.isAuthenticated() 
                 || "anonymousUser".equals(authentication.getPrincipal())) {
-            throw new RuntimeException("Usuário não autenticado");
+            throw new DomainException("Usuário não autenticado");
         }
         
         final Object principal = authentication.getPrincipal();
@@ -85,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
             return (User) principal;
         }
         
-        throw new RuntimeException("Tipo de usuário não suportado");
+        throw new DomainException("Tipo de usuário não suportado");
     }
 }
 

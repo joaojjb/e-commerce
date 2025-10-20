@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import produtos.dto.produtos.ProdutosRequest;
 import produtos.dto.produtos.ProdutosResponse;
 import produtos.entity.Produtos;
+import produtos.config.exception.DomainException;
 import produtos.mapper.ProdutosMapper;
 import produtos.repository.ProdutosRepository;
 
@@ -32,7 +33,7 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Transactional(rollbackFor = Exception.class)
     public ProdutosResponse atualizar(final UUID id, final ProdutosRequest request) {
         Produtos produtoExistente = produtosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new DomainException("Produto não encontrado com ID: " + id));
 
         produtoExistente.setNome(request.getNome());
         produtoExistente.setDescricao(request.getDescricao());
@@ -55,14 +56,14 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Transactional(readOnly = true)
     public Produtos buscarEntidadePorId(final UUID id) {
         return produtosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + id));
+                .orElseThrow(() -> new DomainException("Produto não encontrado com ID: " + id));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void atualizarEstoque(final UUID produtoId, final Integer novaQuantidade) {
         if (novaQuantidade < 0) {
-            throw new RuntimeException("Estoque não pode ser negativo");
+            throw new DomainException("Estoque não pode ser negativo");
         }
 
         produtosRepository.atualizarEstoque(produtoId, novaQuantidade);
@@ -87,7 +88,7 @@ public class ProdutosServiceImpl implements ProdutosService {
     @Transactional(rollbackFor = Exception.class)
     public void deletar(final UUID id) {
         if (!produtosRepository.existsById(id)) {
-            throw new RuntimeException("Produto não encontrado com ID: " + id);
+            throw new DomainException("Produto não encontrado com ID: " + id);
         }
         produtosRepository.deleteById(id);
     }
