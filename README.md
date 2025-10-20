@@ -1,114 +1,87 @@
-# Sistema de Autenticação JWT
+# Sistema de E-commerce
 
-Sistema simples de autenticação com JWT usando Spring Security.
+API REST para gerenciamento de produtos, pedidos e relatórios com autenticação JWT.
 
-## 🚀 Como Executar
+## Tecnologias
 
-### Pré-requisitos
+- Java 17
+- Spring Boot 3.4
+- Spring Security com JWT
+- MySQL 8.4
+- Docker
+- Maven
 
-- Java 17+
-- Maven 3.6+
-- Docker Desktop
+## Como Rodar
 
-### 1. Subir o banco de dados MySQL
+### 1. Subir o banco de dados
 
 ```bash
 docker compose up -d
 ```
 
-### 2. Verificar se o MySQL está rodando
+### 2. Importar os dados iniciais
 
-```bash
-docker compose ps
-```
-
-### 3. Importar estrutura do banco
+O dump já contém dados de exemplo (usuários, produtos, pedidos):
 
 ```bash
 docker exec -i produtos-mysql mysql -uroot -proot < dump.sql
 ```
 
-### 4. Executar a aplicação
+### 3. Compilar o projeto (opcional)
+
+Para compilar e gerar o .jar executável:
+
+```bash
+mvn clean install
+```
+
+### 4. Rodar a aplicação
 
 ```bash
 mvn spring-boot:run
 ```
 
-### 5. Criar primeiro usuário via API
+Ou usando o .jar gerado (se rodou o `mvn clean install`):
 
 ```bash
-curl -X POST http://localhost:8080/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "123456", "role": "ADMIN"}'
+java -jar target/produtos-0.0.1-SNAPSHOT.jar
 ```
 
-### 6. Parar o banco de dados
+A API estará disponível em `http://localhost:8080`
 
-```bash
-docker compose down
-```
-
-### 7. Limpar tudo (incluindo dados)
-
-```bash
-docker compose down -v
-```
-
----
-
-## 💾 Gerenciamento de Banco de Dados
-
-### Gerar dump do banco
-
-```bash
-docker exec produtos-mysql mysqldump -uroot -proot produtos_db > dump.sql
-```
-
-### Importar dump do banco
-
-```bash
-docker exec -i produtos-mysql mysql -uroot -proot produtos_db < dump.sql
-```
-
-### Acessar MySQL diretamente
-
-```bash
-docker exec -it produtos-mysql mysql -uroot -proot produtos_db
-```
-
-📖 Para mais detalhes sobre gerenciamento do banco, consulte [DATABASE.md](DATABASE.md)
-
----
-
-## 🔧 Configuração
-
-- **Banco**: MySQL 8.4.0 (Docker na porta 3307)
-- **Database**: produtos_db
-- **User**: root
-- **Password**: root
-- **JWT Secret**: Configurado no application.properties
-- **JWT Expiração**: 24 horas
-
-## 📡 Endpoints
+## Endpoints Disponíveis
 
 ### Autenticação
 
-- `POST /auth/login` - Fazer login
-- `POST /auth/register` - Registrar novo usuário
+- `POST /auth/register` - Criar novo usuário
+- `POST /auth/login` - Fazer login e obter token JWT
 
 ### Produtos
 
-- `GET /produtos` - Listar todos os produtos (todos os usuários)
-- `GET /produtos/{id}` - Buscar produto por ID (todos os usuários)
-- `GET /produtos/categoria/{categoria}` - Buscar produtos por categoria (todos os usuários)
-- `GET /produtos/buscar?nome={nome}` - Buscar produtos por nome (todos os usuários)
-- `POST /produtos` - Criar novo produto (apenas ADMIN)
+- `GET /produtos` - Listar todos os produtos
+- `GET /produtos/{id}` - Buscar produto por ID
+- `GET /produtos/categoria/{categoria}` - Filtrar por categoria
+- `GET /produtos/buscar?nome={nome}` - Buscar por nome
+- `POST /produtos` - Criar produto (apenas ADMIN)
 - `PUT /produtos/{id}` - Atualizar produto (apenas ADMIN)
 - `DELETE /produtos/{id}` - Deletar produto (apenas ADMIN)
 
-## 🧪 Como Testar
+### Pedidos
 
-### 1. Registrar um usuário
+- `GET /pedidos/{id}` - Buscar pedido por ID
+- `GET /pedidos/meus-pedidos` - Listar pedidos do usuário logado
+- `POST /pedidos` - Criar novo pedido
+- `PATCH /pedidos/pagar/{id}?tipoPagamento={tipo}` - Processar pagamento
+
+### Relatórios (apenas ADMIN)
+
+- `GET /relatorios/top-usuarios` - Top 5 usuários que mais compraram
+- `GET /relatorios/ticket-medio` - Ticket médio por usuário
+- `GET /relatorios/faturamento-mensal?ano={ano}&mes={mes}` - Faturamento mensal
+
+## Testando a API
+
+### 1. Criar um usuário administrador
 
 ```bash
 curl -X POST http://localhost:8080/auth/register \
@@ -120,7 +93,7 @@ curl -X POST http://localhost:8080/auth/register \
   }'
 ```
 
-### 2. Fazer Login
+### 2. Fazer login
 
 ```bash
 curl -X POST http://localhost:8080/auth/login \
@@ -131,7 +104,7 @@ curl -X POST http://localhost:8080/auth/login \
   }'
 ```
 
-**Resposta:**
+Resposta:
 
 ```json
 {
@@ -141,127 +114,112 @@ curl -X POST http://localhost:8080/auth/login \
 }
 ```
 
-### 3. Testar Endpoint Público
+### 3. Usar o token nas requisições
+
+Copie o token recebido e use no header `Authorization: Bearer {seu_token}`:
 
 ```bash
-curl http://localhost:8080/test/public
+curl http://localhost:8080/produtos \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..."
 ```
 
-### 4. Criar um produto (ADMIN)
+### 4. Criar um produto
 
 ```bash
 curl -X POST http://localhost:8080/produtos \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_ADMIN" \
+  -H "Authorization: Bearer {seu_token}" \
   -d '{
-    "nome": "Notebook Dell",
-    "descricao": "Notebook Dell Inspiron 15, i5, 8GB RAM",
+    "nome": "Notebook",
+    "descricao": "Notebook Dell Inspiron 15",
     "preco": 2999.90,
     "categoria": "ELETRONICOS",
     "quantidadeEstoque": 10
   }'
 ```
 
-**Categorias disponíveis:** `ELETRONICOS`, `ROUPAS`, `ALIMENTOS`
+Categorias disponíveis: `ELETRONICOS`, `ROUPAS`, `ALIMENTOS`
 
-### 5. Listar todos os produtos
-
-```bash
-curl http://localhost:8080/produtos \
-  -H "Authorization: Bearer SEU_TOKEN"
-```
-
-### 6. Buscar produto por ID
+### 5. Criar um pedido
 
 ```bash
-curl http://localhost:8080/produtos/{id} \
-  -H "Authorization: Bearer SEU_TOKEN"
-```
-
-### 7. Atualizar produto (ADMIN)
-
-```bash
-curl -X PUT http://localhost:8080/produtos/{id} \
+curl -X POST http://localhost:8080/pedidos \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_ADMIN" \
+  -H "Authorization: Bearer {seu_token}" \
   -d '{
-    "nome": "Notebook Dell Atualizado",
-    "descricao": "Notebook Dell Inspiron 15, i7, 16GB RAM",
-    "preco": 3499.90,
-    "categoria": "ELETRONICOS",
-    "quantidadeEstoque": 5
+    "produtos": [
+      {
+        "produtoId": "uuid-do-produto",
+        "quantidade": 2
+      }
+    ]
   }'
 ```
 
-### 8. Deletar produto (ADMIN)
+### 6. Pagar o pedido
 
 ```bash
-curl -X DELETE http://localhost:8080/produtos/{id} \
-  -H "Authorization: Bearer SEU_TOKEN_ADMIN"
+curl -X PATCH "http://localhost:8080/pedidos/pagar/{id-do-pedido}?tipoPagamento=CARTAO_CREDITO" \
+  -H "Authorization: Bearer {seu_token}"
 ```
 
-## 🔒 Como Funciona
+Tipos de pagamento: `CARTAO_CREDITO`, `CARTAO_DEBITO`, `PIX`, `DINHEIRO`
 
-1. **Login**: Usuário envia username/password
-2. **Autenticação**: Spring Security verifica as credenciais
-3. **Token**: JwtService gera um token JWT
-4. **Proteção**: Filtro JWT intercepta requisições e valida o token
-5. **Acesso**: Se token válido, permite acesso aos endpoints protegidos
-6. **Auditoria**: Sistema registra automaticamente o usuário completo que criou/atualizou cada produto (relacionamento @ManyToOne)
+## Observações
 
-## 👥 Usuários de Teste
+- A aplicação cria automaticamente as tabelas no banco através do Hibernate (ddl-auto=update)
+- O dump.sql já contém alguns dados de exemplo
+- Usuários ADMIN podem gerenciar produtos e acessar relatórios
+- Usuários USER podem fazer pedidos e consultar produtos
+- O sistema valida estoque automaticamente ao processar pagamentos
+- Pedidos podem ser cancelados automaticamente se não houver estoque suficiente
 
-Use o endpoint `/auth/register` para criar usuários. Exemplo:
+## Comandos Úteis
+
+### Maven
 
 ```bash
-# Criar usuário ADMIN
-curl -X POST http://localhost:8080/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "123456", "role": "ADMIN"}'
+# Compilar o projeto
+mvn clean compile
 
-# Criar usuário USER
-curl -X POST http://localhost:8080/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"username": "user", "password": "123456", "role": "USER"}'
+# Compilar e gerar .jar
+mvn clean install
+
+# Limpar build anterior
+mvn clean
 ```
 
-## 📁 Estrutura do Projeto
+### Docker
 
-```
-src/main/java/produtos/
-├── config/
-│   └── SecurityConfig.java                  # Configuração do Spring Security
-├── controller/
-│   ├── auth/
-│   │   └── AuthController.java              # Endpoints de autenticação
-│   └── produtos/
-│       └── ProdutosController.java          # Endpoints de produtos
-├── dto/
-│   └── auth/
-│       ├── LoginRequest.java                # DTO para login
-│       ├── LoginResponse.java               # DTO para resposta de login
-│       └── RegisterRequest.java             # DTO para registro
-├── entity/
-│   ├── User.java                            # Entidade User
-│   └── Produtos.java                        # Entidade Produtos
-├── enums/
-│   └── Role.java                            # Enum de roles (ADMIN, USER)
-├── repository/
-│   ├── UserRepository.java                  # Repository para User
-│   └── ProdutosRepository.java              # Repository para Produtos
-├── security/
-│   └── JwtAuthenticationFilter.java         # Filtro JWT
-└── service/
-    ├── auth/
-    │   ├── AuthService.java                 # Interface do serviço de autenticação
-    │   └── AuthServiceImpl.java             # Implementação do serviço de autenticação
-    ├── CustomUserDetailsService.java        # UserDetailsService personalizado
-    └── JwtService.java                      # Serviço JWT
+```bash
+# Parar o banco de dados
+docker compose down
+
+# Parar e remover todos os dados
+docker compose down -v
+
+# Ver logs do MySQL
+docker compose logs -f mysql
 ```
 
-### 🎯 Padrões Aplicados
+### MySQL
 
-- **Organização por Domínio**: Controllers, Services e DTOs organizados por contexto de negócio
-- **Interface + Implementação**: Services seguem o padrão `Service` (interface) + `ServiceImpl` (implementação)
-- **Convenção Java**: Segue as melhores práticas da comunidade Java/Spring
-- **Separação de Responsabilidades**: Cada pacote tem sua responsabilidade clara
+```bash
+# Acessar o MySQL diretamente
+docker exec -it produtos-mysql mysql -uroot -proot produtos_db
+
+# Gerar novo dump do banco
+docker exec produtos-mysql mysqldump -uroot -proot produtos_db > dump.sql
+
+# Importar dump
+docker exec -i produtos-mysql mysql -uroot -proot < dump.sql
+```
+
+## Configurações
+
+O arquivo `application.properties` contém as configurações principais:
+
+- Porta: 8080
+- Banco de dados: MySQL na porta 3307
+- JWT expiration: 24 horas
+- Username/password do banco: root/root
