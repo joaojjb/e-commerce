@@ -92,10 +92,13 @@ public class PedidosServiceImpl implements PedidosService {
 
         validaStatusPedido(pedido);
 
-        this.processaProdutosPagamento(pedido);
+        final boolean pagamentoAprovado = this.processaProdutosPagamento(pedido);
 
-        pedido.setStatusPedido(PAGO);
-        pedido.setTipoPagamento(tipoPagamento);
+        if (pagamentoAprovado) {
+            pedido.setStatusPedido(PAGO);
+            pedido.setTipoPagamento(tipoPagamento);
+        }
+
         pedido = pedidosRepository.save(pedido);
         return pedidosMapper.toResponse(pedido);
     }
@@ -109,14 +112,17 @@ public class PedidosServiceImpl implements PedidosService {
     }
 
 
-    private void processaProdutosPagamento(final Pedidos pedido) {
+    private boolean processaProdutosPagamento(final Pedidos pedido) {
         for (final ProdutosPedidos item : pedido.getProdutosPedidos()) {
             final Produtos produto = item.getProduto();
 
-            this.validaCancelamento(item, produto, pedido);
+            if (!this.validaCancelamento(item, produto, pedido)) {
+                return false;
+            }
 
             this.atualizaEstoqueProduto(item);
         }
+        return true;
     }
 
     private static void validaStatusPedido(final Pedidos pedido) {
@@ -130,7 +136,7 @@ public class PedidosServiceImpl implements PedidosService {
         produtosService.atualizarEstoque(item.getProduto().getId(), novoEstoque);
     }
 
-    private void validaCancelamento(final ProdutosPedidos item, final Produtos produto, final Pedidos pedido) {
+    private boolean validaCancelamento(final ProdutosPedidos item, final Produtos produto, final Pedidos pedido) {
         if (produto.getQuantidadeEstoque() < item.getQuantidade()) {
             pedido.setStatusPedido(CANCELADO);
             pedido.setMotivoCancelamento(
@@ -138,12 +144,10 @@ public class PedidosServiceImpl implements PedidosService {
                             " (Disponível: " + produto.getQuantidadeEstoque() +
                             ", Necessário: " + item.getQuantidade() + ")"
             );
-            pedidosRepository.save(pedido);
-
-             throw new DomainException("Pagamento cancelado. " + pedido.getMotivoCancelamento());
-         }
+            return false;
+        }
+        return true;
     }
-
 
 
 }

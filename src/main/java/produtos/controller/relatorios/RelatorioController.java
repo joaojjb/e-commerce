@@ -15,21 +15,21 @@ public class RelatorioController {
     private final RelatorioService relatorioService;
     
     @GetMapping("/top-usuarios")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<RelatorioResponse> getTop5Usuarios() {
         final RelatorioResponse relatorio = relatorioService.getTop5UsuariosQueMaisCompraram();
         return ResponseEntity.ok(relatorio);
     }
     
     @GetMapping("/ticket-medio")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<RelatorioResponse> getTicketMedio() {
         final RelatorioResponse relatorio = relatorioService.getTicketMedioPorUsuario();
         return ResponseEntity.ok(relatorio);
     }
     
     @GetMapping("/faturamento-mensal")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<RelatorioResponse> getFaturamentoMensal(
             @RequestParam final Integer ano,
             @RequestParam final Integer mes) {

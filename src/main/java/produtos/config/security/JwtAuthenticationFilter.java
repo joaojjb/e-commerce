@@ -41,15 +41,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        
-        // Extrai o username do token
         username = jwtService.extractUsername(jwt);
 
-        // Se tem username e não está autenticado, autentica
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             final UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            
-            // Verifica se o token é válido
+
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 final UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
