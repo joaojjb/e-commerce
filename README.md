@@ -13,6 +13,12 @@ API REST para gerenciamento de produtos, pedidos e relatórios com autenticaçã
 
 ## Como Rodar
 
+### Pré-Requisitos
+- Docker (necessário para subir o banco MySQL)
+- Docker Compose (já incluso no Docker Desktop)
+- Maven (para compilar e rodar o projeto Java)
+- Java 17 ou superior
+
 ### 1. Subir o banco de dados
 
 ```bash
