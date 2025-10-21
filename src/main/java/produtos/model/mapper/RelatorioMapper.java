@@ -1,4 +1,4 @@
-package produtos.mapper;
+package produtos.model.mapper;
 
 import org.mapstruct.Mapper;
 import produtos.model.dto.relatorios.FaturamentoMensalResponse;

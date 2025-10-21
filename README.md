@@ -171,6 +171,108 @@ curl -X PATCH "http://localhost:8080/pedidos/pagar/{id-do-pedido}?tipoPagamento=
 
 Tipos de pagamento: `CARTAO_CREDITO`, `CARTAO_DEBITO`, `PIX`, `DINHEIRO`
 
+## Estrutura Simples
+
+```
+src/main/java/produtos/
+├── 🔧 config/          # Configurações (Security, JWT, JPA)
+├── 🎮 controller/      # Endpoints REST
+├── ⚙️  service/         # Regras de negócio
+├── 💾 repository/      # Acesso a dados
+├── 📦 model/           # Modelos de dados
+│   ├── entity/        # Entidades JPA
+│   ├── dto/           # Data Transfer Objects
+│   └── mapper/        # Mappers (MapStruct)
+├── 🏷️  enums/           # Enums do domínio
+└── 🛠️  util/            # Utilitários
+```
+
+## Estrutura Completa
+
+```
+src/main/java/produtos/
+├── config/                          # Configurações
+│   ├── AuditorAwareImpl.java
+│   ├── JpaConfig.java
+│   ├── exception/                   # Tratamento de exceções
+│   │   ├── DomainException.java
+│   │   ├── ErrorResponse.java
+│   │   └── GlobalExceptionHandler.java
+│   └── security/                    # Configurações de segurança
+│       ├── JwtAuthenticationFilter.java
+│       └── SecurityConfig.java
+├── controller/                      # Endpoints REST
+│   ├── auth/
+│   │   └── AuthController.java
+│   ├── pedidos/
+│   │   └── PedidosController.java
+│   ├── produtos/
+│   │   └── ProdutosController.java
+│   └── relatorios/
+│       └── RelatorioController.java
+├── service/                         # Regras de negócio
+│   ├── auth/
+│   │   ├── AuthService.java
+│   │   ├── AuthServiceImpl.java
+│   │   ├── CustomUserDetailsService.java
+│   │   └── JwtService.java
+│   ├── pedidos/
+│   │   ├── PedidosService.java
+│   │   └── PedidosServiceImpl.java
+│   ├── produtos/
+│   │   ├── ProdutoSpecification.java
+│   │   ├── ProdutosService.java
+│   │   └── ProdutosServiceImpl.java
+│   └── relatorios/
+│       ├── RelatorioService.java
+│       └── RelatorioServiceImpl.java
+├── repository/                      # Acesso a dados
+│   ├── PedidosRepository.java
+│   ├── ProdutosPedidosRepository.java
+│   ├── ProdutosRepository.java
+│   ├── RelatorioRepository.java
+│   └── UserRepository.java
+├── model/                           # Modelos de dados
+│   ├── entity/                      # Entidades JPA
+│   │   ├── AuditableEntity.java
+│   │   ├── BaseEntity.java
+│   │   ├── Pedidos.java
+│   │   ├── Produtos.java
+│   │   ├── ProdutosPedidos.java
+│   │   └── User.java
+│   ├── dto/                         # Data Transfer Objects
+│   │   ├── auth/
+│   │   │   ├── LoginRequest.java
+│   │   │   ├── LoginResponse.java
+│   │   │   └── RegisterRequest.java
+│   │   ├── pedidos/
+│   │   │   ├── PedidosRequest.java
+│   │   │   ├── PedidosResponse.java
+│   │   │   ├── ProdutosPedidosRequest.java
+│   │   │   └── ProdutosPedidosResponse.java
+│   │   ├── produtos/
+│   │   │   ├── ProdutosRequest.java
+│   │   │   └── ProdutosResponse.java
+│   │   └── relatorios/
+│   │       ├── FaturamentoMensalResponse.java
+│   │       ├── RelatorioResponse.java
+│   │       ├── TicketMedioResponse.java
+│   │       └── TopUsuariosResponse.java
+│   └── mapper/                      # Mappers (MapStruct)
+│       ├── PedidosMapper.java
+│       ├── ProdutosMapper.java
+│       ├── ProdutosPedidosMapper.java
+│       └── RelatorioMapper.java
+├── enums/                           # Enums do domínio
+│   ├── Categoria.java
+│   ├── Role.java
+│   ├── StatusPedido.java
+│   └── TipoPagamento.java
+├── util/                            # Utilitários
+│   └── DateUtils.java
+└── ProdutosApplication.java         # Classe principal
+```
+
 ## Observações
 
 - A aplicação cria automaticamente as tabelas no banco através do Hibernate (ddl-auto=update)

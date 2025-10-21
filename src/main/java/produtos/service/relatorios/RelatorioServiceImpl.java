@@ -7,7 +7,7 @@ import produtos.model.dto.relatorios.FaturamentoMensalResponse;
 import produtos.model.dto.relatorios.RelatorioResponse;
 import produtos.model.dto.relatorios.TicketMedioResponse;
 import produtos.model.dto.relatorios.TopUsuariosResponse;
-import produtos.mapper.RelatorioMapper;
+import produtos.model.mapper.RelatorioMapper;
 import produtos.repository.RelatorioRepository;
 import produtos.util.DateUtils;
 

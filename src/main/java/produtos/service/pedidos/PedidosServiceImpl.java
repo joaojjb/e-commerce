@@ -12,7 +12,7 @@ import produtos.model.entity.ProdutosPedidos;
 import produtos.model.entity.User;
 import produtos.enums.TipoPagamento;
 import produtos.config.exception.DomainException;
-import produtos.mapper.PedidosMapper;
+import produtos.model.mapper.PedidosMapper;
 import produtos.repository.PedidosRepository;
 import produtos.service.auth.AuthService;
 import produtos.service.produtos.ProdutosService;

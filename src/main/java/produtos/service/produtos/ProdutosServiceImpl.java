@@ -7,7 +7,7 @@ import produtos.model.dto.produtos.ProdutosRequest;
 import produtos.model.dto.produtos.ProdutosResponse;
 import produtos.model.entity.Produtos;
 import produtos.config.exception.DomainException;
-import produtos.mapper.ProdutosMapper;
+import produtos.model.mapper.ProdutosMapper;
 import produtos.repository.ProdutosRepository;
 
 import java.math.BigDecimal;
