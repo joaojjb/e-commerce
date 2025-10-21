@@ -1,4 +1,4 @@
-package produtos.dto.auth;
+package produtos.model.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

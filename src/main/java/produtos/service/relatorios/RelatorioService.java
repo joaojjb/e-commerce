@@ -1,6 +1,6 @@
 package produtos.service.relatorios;
 
-import produtos.dto.relatorios.RelatorioResponse;
+import produtos.model.dto.relatorios.RelatorioResponse;
 
 public interface RelatorioService {
     RelatorioResponse getTop5UsuariosQueMaisCompraram();

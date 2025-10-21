@@ -2,8 +2,8 @@ package produtos.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import produtos.dto.pedidos.ProdutosPedidosResponse;
-import produtos.entity.ProdutosPedidos;
+import produtos.model.dto.pedidos.ProdutosPedidosResponse;
+import produtos.model.entity.ProdutosPedidos;
 
 import java.util.List;
 

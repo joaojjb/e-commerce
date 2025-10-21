@@ -1,7 +1,7 @@
 package produtos.service.pedidos;
 
-import produtos.dto.pedidos.PedidosRequest;
-import produtos.dto.pedidos.PedidosResponse;
+import produtos.model.dto.pedidos.PedidosRequest;
+import produtos.model.dto.pedidos.PedidosResponse;
 import produtos.enums.TipoPagamento;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package produtos.service.produtos;
 
-import produtos.dto.produtos.ProdutosRequest;
-import produtos.dto.produtos.ProdutosResponse;
-import produtos.entity.Produtos;
+import produtos.model.dto.produtos.ProdutosRequest;
+import produtos.model.dto.produtos.ProdutosResponse;
+import produtos.model.entity.Produtos;
 
 import java.math.BigDecimal;
 import java.util.List;

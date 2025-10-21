@@ -1,26 +1,27 @@
-package produtos.dto.produtos;
+package produtos.model.dto.pedidos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import produtos.enums.Categoria;
+import produtos.enums.StatusPedido;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProdutosResponse {
+public class PedidosResponse {
     private UUID id;
-    private String nome;
-    private String descricao;
-    private BigDecimal preco;
-    private Categoria categoria;
-    private Integer quantidadeEstoque;
+    private StatusPedido statusPedido;
+    private String tipoPagamento;
+    private BigDecimal valorTotal;
+    private String motivoCancelamento;
+    private List<ProdutosPedidosResponse> produtos;
     private LocalDateTime dataCadastro;
     private LocalDateTime dataAtualizacao;
     private UUID criadoPorId;

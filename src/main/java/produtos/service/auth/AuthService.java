@@ -1,9 +1,9 @@
 package produtos.service.auth;
 
-import produtos.dto.auth.LoginRequest;
-import produtos.dto.auth.LoginResponse;
-import produtos.dto.auth.RegisterRequest;
-import produtos.entity.User;
+import produtos.model.dto.auth.LoginRequest;
+import produtos.model.dto.auth.LoginResponse;
+import produtos.model.dto.auth.RegisterRequest;
+import produtos.model.entity.User;
 
 public interface AuthService {
     LoginResponse login(final LoginRequest request);

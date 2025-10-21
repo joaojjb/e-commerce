@@ -1,4 +1,4 @@
-package produtos.dto.pedidos;
+package produtos.model.dto.pedidos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

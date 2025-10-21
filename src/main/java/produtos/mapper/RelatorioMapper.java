@@ -1,9 +1,9 @@
 package produtos.mapper;
 
 import org.mapstruct.Mapper;
-import produtos.dto.relatorios.FaturamentoMensalResponse;
-import produtos.dto.relatorios.TicketMedioResponse;
-import produtos.dto.relatorios.TopUsuariosResponse;
+import produtos.model.dto.relatorios.FaturamentoMensalResponse;
+import produtos.model.dto.relatorios.TicketMedioResponse;
+import produtos.model.dto.relatorios.TopUsuariosResponse;
 
 import java.util.UUID;
 

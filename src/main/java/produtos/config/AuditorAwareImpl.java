@@ -4,7 +4,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import produtos.entity.User;
+import produtos.model.entity.User;
 
 import java.util.Optional;
 

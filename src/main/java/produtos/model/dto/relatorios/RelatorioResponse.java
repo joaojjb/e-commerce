@@ -1,4 +1,4 @@
-package produtos.dto.relatorios;
+package produtos.model.dto.relatorios;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

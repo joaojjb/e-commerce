@@ -1,4 +1,4 @@
-package produtos.dto.pedidos;
+package produtos.model.dto.pedidos;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import produtos.dto.pedidos.PedidosRequest;
-import produtos.dto.pedidos.PedidosResponse;
+import produtos.model.dto.pedidos.PedidosRequest;
+import produtos.model.dto.pedidos.PedidosResponse;
 import produtos.enums.TipoPagamento;
 import produtos.service.pedidos.PedidosService;
 

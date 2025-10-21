@@ -1,4 +1,4 @@
-package produtos.entity;
+package produtos.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

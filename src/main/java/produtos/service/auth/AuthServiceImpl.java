@@ -7,10 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import produtos.dto.auth.LoginRequest;
-import produtos.dto.auth.LoginResponse;
-import produtos.dto.auth.RegisterRequest;
-import produtos.entity.User;
+import produtos.model.dto.auth.LoginRequest;
+import produtos.model.dto.auth.LoginResponse;
+import produtos.model.dto.auth.RegisterRequest;
+import produtos.model.entity.User;
 import produtos.config.exception.DomainException;
 import produtos.repository.UserRepository;
 

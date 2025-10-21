@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import produtos.dto.relatorios.RelatorioResponse;
+import produtos.model.dto.relatorios.RelatorioResponse;
 import produtos.service.relatorios.RelatorioService;
 
 @RestController

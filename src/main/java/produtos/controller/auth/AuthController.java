@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import produtos.dto.auth.LoginRequest;
-import produtos.dto.auth.LoginResponse;
-import produtos.dto.auth.RegisterRequest;
+import produtos.model.dto.auth.LoginRequest;
+import produtos.model.dto.auth.LoginResponse;
+import produtos.model.dto.auth.RegisterRequest;
 import produtos.service.auth.AuthService;
 
 @RestController

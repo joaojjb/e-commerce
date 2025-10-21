@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.Root;
 import lombok.Builder;
 import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
-import produtos.entity.Produtos;
+import produtos.model.entity.Produtos;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

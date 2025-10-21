@@ -1,4 +1,4 @@
-package produtos.dto.relatorios;
+package produtos.model.dto.relatorios;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +12,10 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopUsuariosResponse {
+public class TicketMedioResponse {
     private UUID usuarioId;
     private String username;
-    private BigDecimal valorTotalCompras;
+    private BigDecimal ticketMedio;
     private Long totalPedidos;
-    private Integer posicao;
+    private BigDecimal valorTotalCompras;
 }
