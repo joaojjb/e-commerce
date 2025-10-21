@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface ProdutosRepository extends JpaRepository<Produtos, UUID>, JpaSpecificationExecutor<Produtos> {
-    
+
     @Modifying
     @Query("UPDATE Produtos p SET p.quantidadeEstoque = :novaQuantidade WHERE p.id = :id")
-    int atualizarEstoque(@Param("id") UUID id, @Param("novaQuantidade") Integer novaQuantidade);
+    void atualizarEstoque(@Param("id") final UUID id, @Param("novaQuantidade") final Integer novaQuantidade);
 }

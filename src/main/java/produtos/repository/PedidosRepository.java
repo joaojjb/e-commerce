@@ -1,5 +1,6 @@
 package produtos.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,9 @@ import java.util.UUID;
 
 @Repository
 public interface PedidosRepository extends JpaRepository<Pedidos, UUID>, JpaSpecificationExecutor<Pedidos> {
+
+    @EntityGraph(attributePaths = {"produtosPedidos", "produtosPedidos.criadoPor",
+            "produtosPedidos.atualizadoPor", "produtosPedidos.produto", "criadoPor", "atualizadoPor"})
     List<Pedidos> findByCriadoPor(final User usuario);
 }
 

@@ -3,7 +3,9 @@ package produtos.model.dto.pedidos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,16 +17,34 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ProdutosPedidosResponse {
     private UUID id;
-    private UUID produtoId;
-    private String produtoNome;
-    private Integer quantidade;
+    private ProdutoResponse produto;
     private BigDecimal precoUnitario;
     private BigDecimal precoTotal;
+    private Integer quantidade;
     private LocalDateTime dataCadastro;
     private LocalDateTime dataAtualizacao;
-    private UUID criadoPorId;
-    private String criadoPorUsername;
-    private UUID atualizadoPorId;
-    private String atualizadoPorUsername;
+    private UserResponse criadoPor;
+    private UserResponse atualizadoPor;
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserResponse {
+        private UUID id;
+        private String username;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ProdutoResponse {
+        private UUID id;
+        private String nome;
+        private String descricao;
+    }
 }
 

@@ -39,8 +39,7 @@ public class Pedidos extends AuditableEntity {
     private String motivoCancelamento;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<ProdutosPedidos> produtosPedidos = new ArrayList<>();
+    private List<ProdutosPedidos> produtosPedidos;
 
     public void adicionarItem(final ProdutosPedidos item) {
         produtosPedidos.add(item);

@@ -51,7 +51,7 @@ public class PedidosServiceImpl implements PedidosService {
 
     private void setProdutosDoPedido(final PedidosRequest request, final Pedidos pedido) {
         for (final ProdutosPedidosRequest itemRequest : request.getProdutos()) {
-            final Produtos produto = findProdutoById(itemRequest.getProdutoId());
+            final Produtos produto = produtosService.buscarEntidadePorId(itemRequest.getProdutoId());
 
             validaQuantidade(itemRequest, produto);
 
@@ -64,10 +64,6 @@ public class PedidosServiceImpl implements PedidosService {
 
             pedido.adicionarItem(item);
         }
-    }
-
-    private Produtos findProdutoById(final UUID id) {
-        return produtosService.buscarEntidadePorId(id);
     }
 
     private static void validaQuantidade(final ProdutosPedidosRequest itemRequest, final Produtos produto) {
