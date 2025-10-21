@@ -21,12 +21,6 @@ public class PedidosController {
 
     private final PedidosService pedidosService;
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<PedidosResponse> buscarPorId(@PathVariable final UUID id) {
-        return ResponseEntity.ok(pedidosService.buscarPorId(id));
-    }
-
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PedidosResponse> criar(@Valid @RequestBody final PedidosRequest request) {

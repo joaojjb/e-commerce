@@ -16,5 +16,7 @@ public interface PedidosRepository extends JpaRepository<Pedidos, UUID>, JpaSpec
     @EntityGraph(attributePaths = {"produtosPedidos", "produtosPedidos.criadoPor",
             "produtosPedidos.atualizadoPor", "produtosPedidos.produto", "criadoPor", "atualizadoPor"})
     List<Pedidos> findByCriadoPor(final User usuario);
+
+    boolean existsByProdutosPedidos_Produto_Id(final UUID id);
 }
 

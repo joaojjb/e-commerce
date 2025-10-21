@@ -3,6 +3,8 @@ package produtos.service.pedidos;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import produtos.config.exception.DomainException;
+import produtos.enums.TipoPagamento;
 import produtos.model.dto.pedidos.PedidosRequest;
 import produtos.model.dto.pedidos.PedidosResponse;
 import produtos.model.dto.pedidos.ProdutosPedidosRequest;
@@ -10,8 +12,6 @@ import produtos.model.entity.Pedidos;
 import produtos.model.entity.Produtos;
 import produtos.model.entity.ProdutosPedidos;
 import produtos.model.entity.User;
-import produtos.enums.TipoPagamento;
-import produtos.config.exception.DomainException;
 import produtos.model.mapper.PedidosMapper;
 import produtos.repository.PedidosRepository;
 import produtos.service.auth.AuthService;
@@ -73,14 +73,6 @@ public class PedidosServiceImpl implements PedidosService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public PedidosResponse buscarPorId(final UUID id) {
-        final Pedidos pedido = pedidosRepository.findById(id)
-                .orElseThrow(() -> new DomainException("Pedido não encontrado com ID: " + id));
-        return pedidosMapper.toResponse(pedido);
-    }
-
-    @Override
     @Transactional
     public PedidosResponse pagar(final UUID id, final TipoPagamento tipoPagamento) {
         Pedidos pedido = pedidosRepository.findById(id)
@@ -107,7 +99,6 @@ public class PedidosServiceImpl implements PedidosService {
         return pedidosMapper.toListResponse(pedidos);
     }
 
-
     private boolean processaProdutosPagamento(final Pedidos pedido) {
         for (final ProdutosPedidos item : pedido.getProdutosPedidos()) {
             final Produtos produto = item.getProduto();
@@ -119,6 +110,12 @@ public class PedidosServiceImpl implements PedidosService {
             this.atualizaEstoqueProduto(item);
         }
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByProdutosPedidos_Produto_Id(final UUID id) {
+        return this.pedidosRepository.existsByProdutosPedidos_Produto_Id(id);
     }
 
     private static void validaStatusPedido(final Pedidos pedido) {
