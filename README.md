@@ -89,6 +89,8 @@ A API estará disponível em `http://localhost:8080`
 
 ### 1. Criar um usuário administrador
 
+> **Nota:** O dump.sql já contém usuários de exemplo. A senha padrão de todos é `123456`.
+
 ```bash
 curl -X POST http://localhost:8080/auth/register \
   -H "Content-Type: application/json" \
