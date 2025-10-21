@@ -1,7 +1,6 @@
 package produtos.model.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import produtos.model.dto.pedidos.PedidosResponse;
 import produtos.model.entity.Pedidos;
 

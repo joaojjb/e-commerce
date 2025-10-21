@@ -6,7 +6,6 @@ import produtos.model.dto.produtos.ProdutosRequest;
 import produtos.model.dto.produtos.ProdutosResponse;
 import produtos.model.entity.Produtos;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ProdutosService {

@@ -64,17 +64,13 @@ A API estará disponível em `http://localhost:8080`
 
 ### Produtos
 
-- `GET /produtos` - Listar todos os produtos
-- `GET /produtos/{id}` - Buscar produto por ID
-- `GET /produtos/categoria/{categoria}` - Filtrar por categoria
-- `GET /produtos/buscar?nome={nome}` - Buscar por nome
+- `GET /produtos?nome=&precoMin=&precoMax=&categoria=&quantidadeMinimaEstoque=` - Listar todos os produtos
 - `POST /produtos` - Criar produto (apenas ADMIN)
 - `PUT /produtos/{id}` - Atualizar produto (apenas ADMIN)
 - `DELETE /produtos/{id}` - Deletar produto (apenas ADMIN)
 
 ### Pedidos
 
-- `GET /pedidos/{id}` - Buscar pedido por ID
 - `GET /pedidos/meus-pedidos` - Listar pedidos do usuário logado
 - `POST /pedidos` - Criar novo pedido
 - `PATCH /pedidos/pagar/{id}?tipoPagamento={tipo}` - Processar pagamento
@@ -87,9 +83,23 @@ A API estará disponível em `http://localhost:8080`
 
 ## Testando a API
 
-### 1. Criar um usuário administrador
+## 🔑 Credenciais Padrão
 
-> **Nota:** O dump.sql já contém usuários de exemplo. A senha padrão de todos é `123456`.
+O dump.sql já contém os seguintes usuários de teste:
+
+**Administrador:**
+- Username: `admin`
+- Password: `123456`
+- Role: `ADMIN`
+
+**Usuário comum:**
+- Username: `user`
+- Password: `123456`
+- Role: `USER`
+
+Você pode usar esses usuários ou criar novos seguindo os passos abaixo.
+
+### 1. Criar um usuário administrador
 
 ```bash
 curl -X POST http://localhost:8080/auth/register \
@@ -155,7 +165,7 @@ curl -X POST http://localhost:8080/pedidos \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer {seu_token}" \
   -d '{
-    "produtos": [
+    "produtosPedidos": [
       {
         "produtoId": "uuid-do-produto",
         "quantidade": 2
@@ -196,6 +206,7 @@ src/main/java/produtos/
 ├── config/                          # Configurações
 │   ├── AuditorAwareImpl.java
 │   ├── JpaConfig.java
+│   ├── WebConfig.java
 │   ├── exception/                   # Tratamento de exceções
 │   │   ├── DomainException.java
 │   │   ├── ErrorResponse.java
@@ -222,6 +233,7 @@ src/main/java/produtos/
 │   │   ├── PedidosService.java
 │   │   └── PedidosServiceImpl.java
 │   ├── produtos/
+│   │   ├── ProdutosFiltroRequest.java
 │   │   ├── ProdutoSpecification.java
 │   │   ├── ProdutosService.java
 │   │   └── ProdutosServiceImpl.java
@@ -230,7 +242,6 @@ src/main/java/produtos/
 │       └── RelatorioServiceImpl.java
 ├── repository/                      # Acesso a dados
 │   ├── PedidosRepository.java
-│   ├── ProdutosPedidosRepository.java
 │   ├── ProdutosRepository.java
 │   ├── RelatorioRepository.java
 │   └── UserRepository.java
@@ -274,6 +285,23 @@ src/main/java/produtos/
 │   └── DateUtils.java
 └── ProdutosApplication.java         # Classe principal
 ```
+
+## 🚀 Otimizações Implementadas
+
+### Prevenção de Problema N+1
+- Uso de `@EntityGraph` em Produtos e Pedidos
+- Carregamento eficiente de relacionamentos aninhados
+- Reduz drasticamente queries ao banco em listagens
+
+### Paginação Inteligente
+- Implementada em endpoints de listagem de produtos
+- Configuração padrão: 20 itens por página
+- Suporte a ordenação customizada
+
+### Queries SQL Otimizadas
+- Relatórios utilizam queries nativas otimizadas
+- Agregações feitas diretamente no banco
+- Índices apropriados nas tabelas principais
 
 ## Observações
 
