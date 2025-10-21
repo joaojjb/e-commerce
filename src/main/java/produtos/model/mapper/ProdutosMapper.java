@@ -14,10 +14,6 @@ public interface ProdutosMapper {
     @Mapping(target = "id", ignore = true)
     Produtos fromRequest(final ProdutosRequest request);
 
-    @Mapping(target = "criadoPorId", source = "criadoPor.id")
-    @Mapping(target = "criadoPorUsername", source = "criadoPor.username")
-    @Mapping(target = "atualizadoPorId", source = "atualizadoPor.id")
-    @Mapping(target = "atualizadoPorUsername", source = "atualizadoPor.username")
     ProdutosResponse toResponse(final Produtos produto);
 
     List<ProdutosResponse> toListResponse(final List<Produtos> produtos);
