@@ -16,6 +16,6 @@ import java.util.List;
 public class PedidosRequest {
     @NotEmpty(message = "Pedido deve conter pelo menos um produto")
     @Valid
-    private List<ProdutosPedidosRequest> produtos;
+    private List<ProdutosPedidosRequest> produtosPedidos;
 }
 
